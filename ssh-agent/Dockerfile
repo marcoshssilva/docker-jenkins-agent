@@ -1,7 +1,7 @@
 FROM jenkins/ssh-agent as jenkins
 
-ARG BUILDX_VERSION=v0.17.1
-ARG DOCKER_VERSION=27.3.1
+ARG BUILDX_VERSION="v0.17.1"
+ARG DOCKER_VERSION="27.3.1"
 
 RUN apt update && apt install -y curl jq tar gzip && \
     curl -Lo /usr/local/bin/docker-buildx "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-$(uname -m)" && \
