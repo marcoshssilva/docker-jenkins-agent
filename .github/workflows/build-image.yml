@@ -1,0 +1,40 @@
+name: Build and push Docker image to Docker Hub
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: arm64,amd64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: docker-jenkins-ssh-agent - Build and push Docker image to multiple platforms
+      run: |
+        docker buildx create --use
+        docker buildx build ./ssh-agent \
+          --platform linux/amd64,linux/arm64/v8 \
+          --file ./ssh-agent/Dockerfile \
+          --tag marcoshssilvadev/docker-jenkins-ssh-agent:latest \
+          --push
+    
+    - name: docker-jenkins-inbound-agent - Build and push Docker image to multiple platforms
+      run: |
+        docker buildx create --use
+        docker buildx build ./inbound-agent \
+          --platform linux/amd64,linux/arm64/v8 \
+          --file ./inbound-agent/Dockerfile \
+          --tag marcoshssilvadev/docker-jenkins-inbound-agent:latest \
+          --push
