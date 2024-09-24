@@ -12,3 +12,5 @@ RUN apt update && apt install -y curl jq tar gzip && \
     tar -xvf docker.tgz && \
     mv docker/* /usr/local/bin/ && \
     rm -rf docker
+
+USER jenkins
